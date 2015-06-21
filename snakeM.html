@@ -2,22 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>Unclassic Snake</title>
+<title>UnClassic Snake</title>
 <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:bold' rel='stylesheet' type='text/css'>
 <style type="text/css">
-
     body {
         background: #9c9;
         text-align: center;
     }
-
     canvas {
         background: #9c9;
         -webkit-box-shadow: 0 0 20px #000;
         -moz-box-shadow: 0 0 20px #000;
         box-shadow: 0 0 20px #000;
     }
-
     h1 {
         font-family: 'Cabin Sketch', arial, serif;
         font-size: 50px;
@@ -25,20 +22,9 @@
         margin-bottom: 20;
         margin-top: 30px
     }
-
-    #xarg > img {
-        position: fixed;
-        right: 20px;
-        bottom: 20px;
-        z-index: 1000;
-        border: 0;
-    }
 </style>
 <script type="text/javascript">
-
-
     function init() {
-
         var width = 45;
         var height = 30;
 
@@ -51,81 +37,55 @@
 
         var elements = 1;
         var map = [];
-
         var MR = Math.random;
-
         var X = 5 + (MR() * (width - 10)) | 0;
         var Y = 5 + (MR() * (height - 10)) | 0;
-
         var direction = MR() * 3 | 0;
 
         var interval = 0;
-
         var score = 0;
         var inc_score = 50;
-
         var sum = 0, easy = 0;
-
         var i, dir;
-
-
         var win = window;
         var doc = document;
-
         var canvas = doc.createElement('canvas');
         var setInt = win.setInterval;
         var clInt = win.clearInterval;
-
         for (i = 0; i < width; i++) {
             map[i] = [];
         }
 
         canvas.setAttribute('width', width * 10);
         canvas.setAttribute('height', height * 10);
-
         ctx = canvas.getContext('2d');
-
         doc.body.appendChild(canvas);
-
         function placeFood() {
-
             var x, y;
-
             do {
                 x = MR() * width | 0;
                 y = MR() * height | 0;
             } while (map[x][y]);
-
             map[x][y] = 1;
             ctx.strokeRect(x * 10 + 1, y * 10 + 1, 10 - 2, 10 - 2);
         }
-
         placeFood();
-
-
+        easy = true;
         function clock() {
-
             if (easy) {
                 X = (X + width) % width;
                 Y = (Y + height) % height;
             }
-
             --inc_score;
-
             if (turn.length) {
                 dir = turn.pop();
                 if ((dir % 2) !== (direction % 2)) {
                     direction = dir;
                 }
             }
-
             if (
-
                     (easy || (0 <= X && 0 <= Y && X < width && Y < height))
-
-
                     && 2 !== map[X][Y]) {
-
                 if (1 === map[X][Y]) {
                     score += Math.max(5, inc_score);
                     inc_score = 50;
@@ -205,23 +165,7 @@
             }
         }
     }
-
-
-</script>
-<script>
-    var _gaq = _gaq || [];
-    _gaq.push(["_setAccount", "UA-1101037-2"]);
-    _gaq.push(["_trackPageview"]);
-
-    (function () {
-        var ga = document.createElement("script");
-        ga.type = "text/javascript";
-        ga.async = true;
-        ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(ga, s);
-    })();
 </script>
 </head>
-<body onload="init()"><h1>Unclassic SNAKE</h1></body>
+<body onload="init()"><h1>UnClassic SNAKE</h1></body>
 </html>
