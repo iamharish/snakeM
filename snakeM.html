@@ -45,7 +45,7 @@
         var interval = 0;
         var score = 0;
         var inc_score = 50;
-        var sum = 0, easy = 0;
+        var sum = 0, easy = true;
         var i, dir;
         var win = window;
         var doc = document;
@@ -70,7 +70,6 @@
             ctx.strokeRect(x * 10 + 1, y * 10 + 1, 10 - 2, 10 - 2);
         }
         placeFood();
-        easy = true;
         function clock() {
             if (easy) {
                 X = (X + width) % width;
@@ -83,9 +82,7 @@
                     direction = dir;
                 }
             }
-            if (
-                    (easy || (0 <= X && 0 <= Y && X < width && Y < height))
-                    && 2 !== map[X][Y]) {
+            if ((easy || (0 <= X && 0 <= Y && X < width && Y < height)) && 2 !== map[X][Y]) {
                 if (1 === map[X][Y]) {
                     score += Math.max(5, inc_score);
                     inc_score = 50;
