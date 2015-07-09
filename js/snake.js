@@ -92,6 +92,12 @@ function init() {
         ctx.textBaseline = 'Middle';
         ctx.fillText('GAME OVER!!!', 220, 100);
         ctx.fillText(lastMovee + "- you lost buddy :(", 150,150);
+        
+        
+        ctx.fillStyle = 'green';
+        ctx.font = ' italic 20px courier';
+        ctx.textBaseline = 'Middle';
+        ctx.fillText('Hit ENTER to RESTART!!', 15,350); 
     }
 
     function restart() {
@@ -224,6 +230,8 @@ function init() {
         } else if(e.keyCode == 83 && snake2.direction != 1) {
             snake2.direction = 3;
             lastMovee = "Player 2";
+        }else if(e.keyCode == 13){
+            restart();
         }
     }
 }
