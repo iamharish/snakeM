@@ -16,6 +16,11 @@ function init() {
     var availableSnakeColors = ["#E6730E", "#9E0EE6"];
     var snakeCount = 0;
 
+    var hitSpotX = -1;
+    var hitSpotY = -1;
+    var aggressorLength;
+    var killGame;
+
     function Snake() {
         this.X = 5 + (MR() * (width - 10)) | 0;
         this.Y = 5 + (MR() * (height - 10)) | 0;
@@ -24,30 +29,66 @@ function init() {
         this.elements = 1;
         this.color = availableSnakeColors[snakeCount];
         this.move = function () {
-            if ((easy || (0 <= this.X && 0 <= this.Y && this.X < width && this.Y < height)) && 2 !== map[this.X][this.Y]) {
-                if (1 === map[this.X][this.Y]) {
-                    score += Math.max(5, inc_score);
-                    inc_score = 50;
-                    placeFood();
-                    this.elements++;
-                }
-
-                ctx.fillRect(this.X * 10, this.Y * 10, 10 - 1, 10 - 1);
-                ctx.fillStyle = this.color;
-                map[this.X][this.Y] = 2;
-                this.tail.unshift([this.X, this.Y]);
-
-                this.X += xV[this.direction];
-                this.Y += yV[this.direction];
-
-                if (this.elements < this.tail.length) {
-                    dir = this.tail.pop();
-                    map[dir[0]][dir[1]] = 0;
-                    ctx.clearRect(dir[0] * 10, dir[1] * 10, 10, 10);
-                }
-
-            } else if (!turn.length) {
+            //if canvas edges have to be wall, then easy should be false
+            if(killGame == true){
                 rollCredits();
+            } else {
+                if ((easy || (0 <= this.X && 0 <= this.Y && this.X < width && this.Y < height)) && 2 !== map[this.X][this.Y]) {
+                    //check if a hit happened
+                    if(hitSpotX != -1){
+                        if(this.elements > 1){
+                            //decide if the hitSpot is within the snake tail
+                            var tailLengthBelowHitSpot = 0;
+                            for(var i=0;i<this.elements;i++){
+                                if(this.tail[i][0] == hitSpotX && this.tail[i][1] == hitSpotY ){
+                                    tailLengthBelowHitSpot = this.elements - i;
+                                    break;
+                                }
+                            }
+                            if(aggressorLength > tailLengthBelowHitSpot){
+                                this.elements -= tailLengthBelowHitSpot;
+                                for(var j=0; j < tailLengthBelowHitSpot; j++){
+                                    dir = this.tail.pop();
+                                    map[dir[0]][dir[1]] = 0;
+                                    ctx.clearRect(dir[0] * 10, dir[1] * 10, 10, 10);
+                                }
+                                hitSpotX = -1;
+                                hitSpotY = -1;
+                            } else {
+                                killGame = true;
+                            }
+                        } else {
+                            //snake has no tail. Game Over
+                            rollCredits();
+                        }
+                    } else {
+                        //regular snake movement
+                        if (1 === map[this.X][this.Y]) {
+                            score += Math.max(5, inc_score);
+                            inc_score = 50;
+                            placeFood();
+                            this.elements++;
+                        }
+
+                        ctx.fillRect(this.X * 10, this.Y * 10, 10 - 1, 10 - 1);
+                        ctx.fillStyle = this.color;
+                        map[this.X][this.Y] = 2;
+                        this.tail.unshift([this.X, this.Y]);
+
+                        this.X += xV[this.direction];
+                        this.Y += yV[this.direction];
+
+                        if (this.elements < this.tail.length) {
+                            dir = this.tail.pop();
+                            map[dir[0]][dir[1]] = 0;
+                            ctx.clearRect(dir[0] * 10, dir[1] * 10, 10, 10);
+                        }
+                    }
+                } else if (!turn.length) {
+                    hitSpotX = this.X;
+                    hitSpotY = this.Y;
+                    aggressorLength = this.elements;
+                }
             }
         };
         snakeCount++;
@@ -85,7 +126,6 @@ function init() {
     doc.body.appendChild(canvas1);
 
     //vertical lines
-
     for (var i = 0; i < width; i++) {
         ctx1.beginPath();
         ctx1.moveTo(i * 10, 0);
@@ -96,7 +136,6 @@ function init() {
     }
 
     //Horizontal lines
-
     for (var y = 0; y < height; y++) {
         ctx1.beginPath();
         ctx1.moveTo(0, y * 10);
