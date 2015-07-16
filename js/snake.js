@@ -167,6 +167,10 @@ function init() {
         ctx.font = ' italic 20px courier';
         ctx.textBaseline = 'Middle';
         ctx.fillText('Hit ENTER to RESTART!!', 15, 350);
+        //clear off temp variables
+        hitSpotX = -1;
+        hitSpotY = -1;
+        killGame = false;
     }
 
     function restart() {
