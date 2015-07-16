@@ -24,6 +24,7 @@ function init() {
     function Snake() {
         this.X = 5 + (MR() * (width - 10)) | 0;
         this.Y = 5 + (MR() * (height - 10)) | 0;
+        this.score = 0;
         this.direction = MR() * 3 | 0;
         this.tail = [];
         this.elements = 1;
@@ -33,7 +34,7 @@ function init() {
             if(killGame == true){
                 rollCredits();
             } else {
-                if ((easy || (0 <= this.X && 0 <= this.Y && this.X < width && this.Y < height)) && 2 !== map[this.X][this.Y]) {
+                if ((easy || (0 <= this.X && 0 <= this.Y && this.X < width && this.Y < height)) && (2 !== map[this.X][this.Y])) {
                     //check if a hit happened
                     if(hitSpotX != -1){
                         if(this.elements > 1){
@@ -64,8 +65,7 @@ function init() {
                     } else {
                         //regular snake movement
                         if (1 === map[this.X][this.Y]) {
-                            score += Math.max(5, inc_score);
-                            inc_score = 50;
+                            this.score += 50;
                             placeFood();
                             this.elements++;
                         }
@@ -85,9 +85,14 @@ function init() {
                         }
                     }
                 } else if (!turn.length) {
-                    hitSpotX = this.X;
-                    hitSpotY = this.Y;
-                    aggressorLength = this.elements;
+                    if(hitSpotX != -1){
+                        hitSpotX = this.X;
+                        hitSpotY = this.Y;
+                        aggressorLength = this.elements;
+                    } else {
+                        //seems a head on collision as hitSpot already exists. Kill game
+                        rollCredits();
+                    }
                 }
             }
         };
@@ -158,11 +163,22 @@ function init() {
     placeFood();
 
     function rollCredits() {
+        var topScore = snake1.score;
+        var winner = "Player1"
+        for (i = 1; i < snakes.length; i++) {
+            var snake = snakes[i];
+            if(snake.score > topScore){
+                winner = "Player2";
+            } else if(snake.score == topScore){
+                //more better way to handle tie's would be needed. But for now - no winner
+                winner = "players. Its a tie"
+            }
+        }
         ctx.fillStyle = '#f00';
         ctx.font = 'italic bold 30px sans-serif';
         ctx.textBaseline = 'Middle';
         ctx.fillText('GAME OVER!!!', 220, 100);
-        ctx.fillText(lastMovee + "- you lost buddy :(", 150, 150);
+        ctx.fillText("All hail the "+winner, 150, 150);
         ctx.fillStyle = 'green';
         ctx.font = ' italic 20px courier';
         ctx.textBaseline = 'Middle';
@@ -207,7 +223,6 @@ function init() {
     }
 
     interval = setInt(clock, 120);
-    var lastMovee;
 
     // Adding keyboard controls
     doc.onkeydown = function (e) {
@@ -223,28 +238,20 @@ function init() {
         //first snake arrow keys
         if (code == 0 && snake1.direction != 2) {
             snake1.direction = 0;
-            lastMovee = "Player1";
         } else if (code == 1 && snake1.direction != 3) {
             snake1.direction = 1;
-            lastMovee = "Player1";
         } else if (code == 2 && snake1.direction != 0) {
             snake1.direction = 2;
-            lastMovee = "Player1";
         } else if (code == 3 && snake1.direction != 1) {
             snake1.direction = 3;
-            lastMovee = "Player1";
         } else if (e.keyCode == 65 && snake2.direction != 2) { //second snake wasd keys
             snake2.direction = 0;
-            lastMovee = "Player 2";
         } else if (e.keyCode == 87 && snake2.direction != 3) {
             snake2.direction = 1;
-            lastMovee = "Player 2";
         } else if (e.keyCode == 68 && snake2.direction != 0) {
             snake2.direction = 2;
-            lastMovee = "Player 2";
         } else if (e.keyCode == 83 && snake2.direction != 1) {
             snake2.direction = 3;
-            lastMovee = "Player 2";
         } else if (e.keyCode == 13) {
             restart();
         }
