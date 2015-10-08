@@ -5,4 +5,4 @@ A multiplayer twist to the classic version of the snake game at http://www.xarg.
 **Controls**: Arrow Keys for First Snake and WASD keys for Second Snake.
 
 
->Test it out http://iamharish.info/snakeM.html
+>Test it out http://iamharish.github.io/snakeM/snakeM.html or http://iamharish.info/snakeM.html
